@@ -1,9 +1,11 @@
 import type { NextPage } from "next";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
+	const { data: session } = useSession();
 	return (
 		<div className={styles.container}>
 			<Head>
@@ -16,6 +18,21 @@ const Home: NextPage = () => {
 				<h1 className={styles.title}>
 					Welcome to <a href='https://nextjs.org'>Next.js!</a>
 				</h1>
+
+				<div>
+					{session ? (
+						<>
+							<p>Signed in as {session.user?.email} <br /></p>
+							<p>Access Token: {JSON.stringify(session)}<br /></p>
+        					<button onClick={() => signOut()}>Sign out</button>
+						</>
+					):(
+						<>
+							Not signed in <br />
+      						<button onClick={() => signIn()}>Sign in</button>
+						</>
+					)}
+				</div>
 
 				<p className={styles.description}>
 					Get started by editing <code className={styles.code}>pages/index.tsx</code>
