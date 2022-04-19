@@ -33,6 +33,16 @@ const Home: NextPage = () => {
 						</>
 					)}
 				</div>
+				<button onClick={async () => {
+					fetch("/api/register", {
+						body: JSON.stringify({
+							email: "test@gmail.com",
+							password: "test",
+							name: "test",
+						}),
+						method: "POST",
+					});
+				}}>Register</button>
 
 				<p className={styles.description}>
 					Get started by editing <code className={styles.code}>pages/index.tsx</code>
