@@ -16,4 +16,7 @@ export const nextAuthHandler = NextAuth({
 	session: {
 		strategy: "jwt"
 	},
+	pages: {
+		signIn: "/login",
+	},
 });

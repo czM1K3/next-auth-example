@@ -24,25 +24,25 @@ const Home: NextPage = () => {
 						<>
 							<p>Signed in as {session.user?.email} <br /></p>
 							<p>Access Token: {JSON.stringify(session)}<br /></p>
-        					<button onClick={() => signOut()}>Sign out</button>
+							<button onClick={() => signOut()}>Sign out</button>
 						</>
-					):(
+					) : (
 						<>
 							Not signed in <br />
-      						<button onClick={() => signIn()}>Sign in</button>
+							<button onClick={() => signIn()}>Sign in</button>
+							<button onClick={async () => {
+								await fetch("/api/register", {
+									body: JSON.stringify({
+										email: "test@gmail.com",
+										password: "test",
+										name: "test",
+									}),
+									method: "POST",
+								});
+							}}>Register</button>
 						</>
 					)}
 				</div>
-				<button onClick={async () => {
-					fetch("/api/register", {
-						body: JSON.stringify({
-							email: "test@gmail.com",
-							password: "test",
-							name: "test",
-						}),
-						method: "POST",
-					});
-				}}>Register</button>
 
 				<p className={styles.description}>
 					Get started by editing <code className={styles.code}>pages/index.tsx</code>
