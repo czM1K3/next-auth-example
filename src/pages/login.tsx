@@ -26,7 +26,7 @@ const Login: NextPage<LoginProps> = ({ providers, csrfToken, error }) => {
 			}}>
 				<button>Register</button>
 			</a>
-			{Object.values(providers ?? []).filter((provider) => provider.name !== "Credentials").map((provider) => (
+			{Object.values(providers ?? []).filter((provider) => !["Credentials", "Credentials Register"].includes(provider.name)).map((provider) => (
 				<div key={provider.name}>
 					<button onClick={() => signIn(provider.id)}>
 						Sign in with {provider.name}
