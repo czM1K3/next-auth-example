@@ -2,7 +2,8 @@ import type { GetServerSideProps, NextPage } from "next"
 import { BuiltInProviderType } from "next-auth/providers";
 import { ClientSafeProvider, getCsrfToken, getProviders, getSession, LiteralUnion, signIn, useSession } from "next-auth/react"
 import Link from "next/link";
-import { FormEvent } from "react";
+import { useState } from "react";
+import { getErrorMessage } from "../lib/auth/errorMessage";
 
 type LoginProps = {
 	providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null;
@@ -11,6 +12,7 @@ type LoginProps = {
 };
 
 const Login: NextPage<LoginProps> = ({ providers, csrfToken, error }) => {
+	const [showLogin, setShowLogin] = useState(true);
 	return (
 		<>
 			<Link href="/" passHref>
@@ -18,6 +20,12 @@ const Login: NextPage<LoginProps> = ({ providers, csrfToken, error }) => {
 					<button>Back</button>
 				</a>
 			</Link>
+			<a onClick={(e) => {
+				e.preventDefault();
+				setShowLogin(!showLogin);
+			}}>
+				<button>Register</button>
+			</a>
 			{Object.values(providers ?? []).filter((provider) => provider.name !== "Credentials").map((provider) => (
 				<div key={provider.name}>
 					<button onClick={() => signIn(provider.id)}>
@@ -26,23 +34,24 @@ const Login: NextPage<LoginProps> = ({ providers, csrfToken, error }) => {
 				</div>
 			))}
 			{error && <p style={{color: "red"}}>{error}</p>}
-			<form method="post" action="/api/auth/callback/credentials">
-				<input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-				<input type="email" name="email" placeholder="Email" />
-				<input type="password" name="password" placeholder="Password" />
-				<button>Login</button>
-			</form>
+			{showLogin ? (
+				<form method="post" action="/api/auth/callback/credentials">
+					<input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+					<input type="email" name="email" placeholder="Email" />
+					<input type="password" name="password" placeholder="Password" />
+					<button>Login</button>
+				</form>
+			) : (
+				<form method="post" action="/api/auth/callback/credentials-register">
+					<input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+					<input type="email" name="email" placeholder="Email" />
+					<input type="password" name="password" placeholder="Password" />
+					<input type="text" name="name" placeholder="Name" />
+					<button>Register</button>
+				</form>
+			)}
 		</>
-	)
-}
-
-const getErrorMessage = (error: string | string[] | undefined): string | null => {
-	switch (error) {
-		case "CredentialsSignin":
-			return "Invalid email or password"
-		default:
-			return null;
-	};
+	);
 };
 
 export const getServerSideProps: GetServerSideProps<LoginProps> = async (context) => {
@@ -61,7 +70,7 @@ export const getServerSideProps: GetServerSideProps<LoginProps> = async (context
 			csrfToken: (await getCsrfToken(context))!,
 			error: getErrorMessage(context.query.error),
 		},
-	}
+	};
 }
 
 export default Login;

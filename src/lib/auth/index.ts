@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { credentialsProvider } from "./providers/credetials";
 import { githubProvider } from "./providers/github";
 import { googleProvider } from "./providers/google";
+import { credentialsRegisterProvider } from "./providers/register";
 
 
 export const nextAuthHandler = NextAuth({
@@ -11,6 +12,7 @@ export const nextAuthHandler = NextAuth({
 	providers: [
 		githubProvider,
 		credentialsProvider,
+		credentialsRegisterProvider,
 		googleProvider,
 	],
 	session: {

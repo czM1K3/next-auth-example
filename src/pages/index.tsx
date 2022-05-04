@@ -30,16 +30,6 @@ const Home: NextPage = () => {
 						<>
 							Not signed in <br />
 							<button onClick={() => signIn()}>Sign in</button>
-							<button onClick={async () => {
-								await fetch("/api/register", {
-									body: JSON.stringify({
-										email: "test@gmail.com",
-										password: "test",
-										name: "test",
-									}),
-									method: "POST",
-								});
-							}}>Register</button>
 						</>
 					)}
 				</div>
